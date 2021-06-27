@@ -24,6 +24,7 @@ import javax.swing.border.TitledBorder;
 
 public class UI extends JFrame {
     
+    //Variables
     private final int SCREEN_INITIAL_WIDTH = 1080;
     private final int SCREEN_INITIAL_HEIGHT = 600;
     private final int EDIT_WIDTH = 340;
@@ -48,15 +49,22 @@ public class UI extends JFrame {
     BufferedReader csvreader;
     BufferedWriter csvwriter;
 
+    //Performing edits to the CSV data (multi-dimensional array)
     class editListener implements ActionListener{
+        
         @Override
         public void actionPerformed(ActionEvent event) {
+            
+            //Variables
             String column = "";
             int row = 0;
             String edit = "";
             int rownum = 0;
             int colnum = 0;
+            
             try{
+                
+                //Getting Column
                 column = (String)columnCombo.getSelectedItem();
                 switch (column){
                     case "model":
@@ -96,24 +104,38 @@ public class UI extends JFrame {
                         colnum = 11;
                     break;
                 }
+                
+                //Getting Row
                 row = (Integer)rowCombo.getSelectedItem();
                 rownum = row-1;
+                
+                //Getting edit
                 edit = editInput.getText();
+                
+                //Making edit
                 System.out.println("Done! Saved column " + column+" ("+colnum+") row "+row+" ("+rownum+") as '"+edit+"'");
                 csvarray[rownum][colnum] = edit;
             }
+            
             catch(NullPointerException e){
+                
                 System.out.println("At least 1 field is empty");
+                
             }
         }
         
     }
     
+    //Saving the multi-dimensional array to the CSV
     class saveListener implements ActionListener{
+        
         @Override
         public void actionPerformed(ActionEvent e) {
             try {
+                
                 StringBuilder csvsave = new StringBuilder();
+                
+                //Appending the header
                 for(int i = 0; i < tablecol; i++){
                     csvsave.append(csvheader[i]);
                     if(i < tablecol-1){
@@ -121,6 +143,8 @@ public class UI extends JFrame {
                     }
                 }
                 csvsave.append("\n");
+                
+                //Appending the data
                 for(int i = 0; i < tablerow; i++){
                     for(int j = 0; j < tablecol; j++){
                         csvsave.append(csvarray[i][j]);
@@ -130,13 +154,19 @@ public class UI extends JFrame {
                     }
                     csvsave.append("\n");
                 }
+                
+                //Saving
                 System.out.println(csvsave);
                 csvwriter = new BufferedWriter(new FileWriter(csv));
                 csvwriter.write(csvsave.toString());
                 csvwriter.close();
                 System.out.println("Edits Saved!");
-            } catch (IOException ex) {
+            } 
+            
+            catch (IOException ex) {
+                
                 Logger.getLogger(UI.class.getName()).log(Level.SEVERE, null, ex);
+                
             }
         }
         
@@ -144,6 +174,7 @@ public class UI extends JFrame {
     
     public UI() {
         
+        //Making CSV arrays
         csvarray = new String[tablerow][tablecol];
         csvheader = new String[12];
         
@@ -152,11 +183,14 @@ public class UI extends JFrame {
             rowarray[i-1] = i;
         }
         
+        //Loading from CSV to a multi-dimensional array
         try {
             csvreader = new BufferedReader(new FileReader(csv));
             
             while((line = csvreader.readLine()) != null ){
                 String[] input = line.split(",");
+                
+                //Loading to header or data
                 if (a < 1){
                     for (int i=0; i < 12; i++){
                     csvheader[i] = input[i];
@@ -176,12 +210,14 @@ public class UI extends JFrame {
             Logger.getLogger(UI.class.getName()).log(Level.SEVERE, null, ex);
         }
         
+    //UI Elements
     csvdisplay = new JPanel();
     csvdisplay.setBorder(new TitledBorder(new EtchedBorder(), "Mtcars Reader"));
     csvdisplay.setPreferredSize(new Dimension(SCREEN_INITIAL_WIDTH, SCREEN_INITIAL_HEIGHT));
     csvdisplay.setLayout(new FlowLayout());
     add(csvdisplay);
     
+    //Display Panel and Table
     displayPanel = new JPanel();
     displayPanel.setBorder(new TitledBorder(new EtchedBorder(), "Display CSV"));
     displayPanel.setPreferredSize(new Dimension(700, SCREEN_INITIAL_HEIGHT-50));
@@ -192,6 +228,7 @@ public class UI extends JFrame {
     csvscroll.setPreferredSize(new Dimension(680, SCREEN_INITIAL_HEIGHT-100));
     displayPanel.add(csvscroll);
         
+    //Edit Panel and Edit Options
     editPanel = new JPanel();
     editPanel.setBorder(new TitledBorder(new EtchedBorder(), "Edit CSV"));
     editPanel.setPreferredSize(new Dimension(EDIT_WIDTH, SCREEN_INITIAL_HEIGHT-50));

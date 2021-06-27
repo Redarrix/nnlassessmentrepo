@@ -15,3 +15,10 @@ This challenge is to create a simple application with a very basic user interfac
 
 # Summary
 Write a brief summary of additional changes you would propose to improve the application.
+
+Additional Changes:
+* Add support for CSVs of any size.
+* When an edit is made, update the table immediately
+* Allow a part of the array to be selected by selecting that cell in the table
+* Load a CSV of choice as an option within runtime
+* Add a row number to the table for quick and easy identification for editing purposes
